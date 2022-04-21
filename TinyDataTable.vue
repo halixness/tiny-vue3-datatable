@@ -80,8 +80,9 @@ if(attrs.itemsPerPage !== undefined)
   itemsPerPage.value = parseInt(attrs.itemsPerPage)
 
 // ---- Computed properties
-let pages = computed(() => {
-  return itemsPerPage.value === 0 ? 0 : Math.ceil(attrs.items.length / itemsPerPage.value)
+let filteredItems = computed(() => {
+  return attrs.items
+      .filter((item:any) => entryMatches(attrs.search, item))
 })
 
 let startIndex = computed(() => {
@@ -93,7 +94,13 @@ let endIndex = computed(() => {
 })
 
 let displayedItems = computed(() => {
-  return attrs.items.slice(startIndex.value, endIndex.value)
+  return filteredItems
+      .value
+      .slice(startIndex.value, endIndex.value)
+})
+
+let pages = computed(() => {
+  return itemsPerPage.value === 0 ? 0 : Math.ceil(filteredItems.value.length / itemsPerPage.value)
 })
 
 // ---- Functions
